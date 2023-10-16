@@ -35,8 +35,38 @@ class User(BaseModel):
 class UserInDB(User):
     hashed_password: str
 
-pwd_context = CryptContext(schemes=["bcrypt"])
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated='auto')
 oath_2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
 
+def verify_password(password, hashed_password):
+    return pwd_context.verify(password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+def get_user(db, username: str):
+    if username in db:
+        user_data = db[username]
+        return UserInDB(**user_data)
+    
+
+def authenticate_user(db, username: str, password: str):
+    user = get_user(db, username)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
+
+def create_access_token(data: dict, expire_delta: timedelta or None = None):
+    to_encode = data.copy()
+    if expire_delta:
+        expire = datetime.utcnow() + expire_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
