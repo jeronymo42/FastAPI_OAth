@@ -70,3 +70,21 @@ def create_access_token(data: dict, expire_delta: timedelta or None = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+async def get_current_user(token: str = Depends(oath_2_scheme)):
+    credential_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Нет прав!", headers={"WWW-Authentication": "Auth problem"})
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get('sub')
+        if username:
+            token_data = TokenData(username=username)
+        else:
+            raise credential_exception
+    except JWSError:
+        raise credential_exception
+    
+    user = get_user(db, username=token_data.username)
+    if user:
+        return user
+    else:
+        raise credential_exception
