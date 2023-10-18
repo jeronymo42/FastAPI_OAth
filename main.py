@@ -9,7 +9,7 @@ SECRET_KEY = "3c69a3aa553fa445d1552408d84b1370dc9db3db887ece6be694c181aad7aace"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-fake_user_db = {
+db = {
     "Vladimir": {
         "username": "jeronymo",
         "full_name": "Vladimir",
@@ -101,7 +101,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Некорректное имя пользователя или пароль!", headers={"WWW-Authentication": "Auth problem"})
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user.username}, expire_delta==access_token_expires)
+    access_token = create_access_token(data={"sub": user.username}, expire_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/users/me", response_model=User)
