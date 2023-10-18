@@ -14,7 +14,7 @@ db = {
         "username": "jeronymo",
         "full_name": "Vladimir",
         "email":"-",
-        "hashed_password":"",
+        "hashed_password":"$2b$12$9I2uX/lZt.hdtWINjRB9buXKWrrxFBESug/AtOr6kYCsq1jVDMCiW",
         "disabled": False
     }
 }
