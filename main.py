@@ -10,11 +10,11 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 db = {
-    "Vladimir": {
+    "jeronymo": {
         "username": "jeronymo",
         "full_name": "Vladimir",
         "email":"-",
-        "hashed_password":"$2b$12$9I2uX/lZt.hdtWINjRB9buXKWrrxFBESug/AtOr6kYCsq1jVDMCiW",
+        "hashed_password":"$2b$12$zTWr0Bxn11od8NSUZgNjQuqBcUY/LSVyzNavqKOhu4C0ogOiZi612",
         "disabled": False
     }
 }
@@ -111,4 +111,4 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 
 @app.get("/users/me/items")
 async def read_own_items(current_user: User = Depends(get_current_active_user)):
-    return current_user[{"item_id": 1, "owner": current_user}]
+    return [{"item_id": 1, "owner": current_user}]
